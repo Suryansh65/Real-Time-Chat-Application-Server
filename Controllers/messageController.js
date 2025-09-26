@@ -7,6 +7,7 @@ import { io, userSocketMap } from "../server.js";
 export const getUsersForSidebar = async (req, res) => {
   try {
     const userId = req.user._id;
+
     const filteredUser = await User.find({ _id: { $ne: userId } }).select(
       "-password"
     );
@@ -47,7 +48,7 @@ export const getMessages = async (req, res) => {
       { senderId: selectedUserId, receiverId: myId },
       { seen: true }
     );
-    res.json({ success: true, data: messages });
+    res.json({ success: true, messages });
   } catch (err) {
     console.log(err.message);
     res.json({ success: false, message: err.message });
@@ -89,7 +90,7 @@ export const sendMessage = async (req, res) => {
     if (receiverSocketId) {
       io.to(receiverSocketId).emit("newMessage", newMessage);
     }
-    res.json({ success: true, data: newMessage });
+    res.json({ success: true, newMessage });
   } catch (err) {
     console.log(err.message);
     res.json({ success: false, message: err.message });
