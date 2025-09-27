@@ -47,12 +47,19 @@ app.use("/api/status", (req, res) => res.send("server is live"));
 // Routes
 app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
-// Connect to mongodb
-await connectDB();
-if (process.env.NODE_ENV !== "production") {
-  const PORT = process.env.PORT || 5000;
-  server.listen(PORT, () => console.log("Server is running on port : " + PORT));
-}
+// Start server with MongoDB connection
+const startServer = async () => {
+  try {
+    await connectDB();
+    console.log("MongoDB connected");
+    const PORT = process.env.PORT || 5000;
+    server.listen(PORT, () => {
+      console.log(`Server is running on port: ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
 
-// Export server for vercel
-export default server;
+startServer();
