@@ -14,7 +14,7 @@ const server = http.createServer(app);
 // Initialize socket.io server
 export const io = new Server(server, {
   cors: {
-    origin: "https://real-time-chat-application-client-zeta.vercel.app/", // Replace with your frontend URL
+    origin: "https://real-time-chat-application-client-zeta.vercel.app", // Replace with your frontend URL
     methods: ["GET", "POST"],
     credentials: true, // If using cookies or auth tokens
   },
@@ -41,7 +41,14 @@ io.on("connection", (socket) => {
 
 // Middleware setup
 app.use(express.json({ limit: "4mb" }));
-app.use(cors());
+
+app.use(
+  cors({
+    origin: "https://real-time-chat-application-client-zeta.vercel.app", // Match your frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true, // If using cookies or auth tokens
+  })
+);
 app.use("/api/status", (req, res) => res.send("server is live"));
 
 // Routes
