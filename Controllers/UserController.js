@@ -44,7 +44,11 @@ export const login = async (req, res) => {
     // console.log("password while login", password);
     // console.log("email while login", email);
     const userData = await User.findOne({ email });
-    // console.log("userData", userData);
+    console.log("userData", userData);
+    if (!userData) {
+      res.json({ success: false, message: "User not Found" });
+      return;
+    }
     const isPassword = await bcrypt.compare(password, userData.password);
     if (!isPassword) {
       res.json({ success: false, message: "Incorrect Credentials" });
