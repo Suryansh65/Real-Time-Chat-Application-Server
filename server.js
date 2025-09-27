@@ -13,7 +13,11 @@ const server = http.createServer(app);
 
 // Initialize socket.io server
 export const io = new Server(server, {
-  cors: { origin: "*" },
+  cors: {
+    origin: "https://real-time-chat-application-client-zeta.vercel.app/", // Replace with your frontend URL
+    methods: ["GET", "POST"],
+    credentials: true, // If using cookies or auth tokens
+  },
 });
 //store online users
 export const userSocketMap = {}; //{userId: socketId}
@@ -45,6 +49,10 @@ app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
 // Connect to mongodb
 await connectDB();
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000;
+  server.listen(PORT, () => console.log("Server is running on port : " + PORT));
+}
 
 // Export server for vercel
-export default app;
+export default server;
